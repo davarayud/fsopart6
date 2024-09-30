@@ -4,7 +4,7 @@ const baseUrl = 'http://localhost:3001/anecdotes'
 
 const getAll = async () => {
   const response = await axios.get(baseUrl)
-  return response
+  return response.data
 }
 
 const createNew = async (content) => {
@@ -13,4 +13,9 @@ const createNew = async (content) => {
   return response.data
 }
 
-export default { getAll, createNew }
+const update = async (id, newObjet) => {
+  const response = await axios.put(`${baseUrl}/${id}`, newObjet)
+  return response.data
+}
+
+export default { getAll, createNew, update }
