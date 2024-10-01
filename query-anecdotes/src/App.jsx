@@ -3,15 +3,19 @@ import axios from 'axios'
 import AnecdoteForm from './components/AnecdoteForm'
 import Notification from './components/Notification'
 import { getAnecdotes, updateAnecdote } from './request'
+import notificationUtils from './utils/notificationUtils'
 
 const App = () => {
   const queryClient = useQueryClient()
   const updateAnecdoteMutation = useMutation({
-     mutationFn: updateAnecdote,
-     onSuccess: () => {
-       queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
-     },
+    mutationFn: updateAnecdote,
+    onSuccess: (anecdote) => {
+      queryClient.invalidateQueries({ queryKey: ['anecdotes'] })
+      NotifDispatch(notificationUtils.setNotif(`Anecdote '${anecdote.content}' voted`))
+      setTimeout(() => NotifDispatch(notificationUtils.deleteNotif()), 5000)
+    },
   })
+  const NotifDispatch = notificationUtils.useNotificationDispatch()
 
   const handleVote = (anecdote) => {
     updateAnecdoteMutation.mutate({ ...anecdote, votes: anecdote.votes + 1 })
